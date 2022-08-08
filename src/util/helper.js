@@ -13,8 +13,8 @@ const printMonth =function(){
 }
 
 const getBatchInfo =function (){
-    batch= "plutonium";
-    weekAndDay = "  W3D5"
+    let batch= "plutonium";
+    let weekAndDay = "  W3D5"
     console.log (`${batch},${weekAndDay} the topic for today is Nodejs module system`)
 }
 
