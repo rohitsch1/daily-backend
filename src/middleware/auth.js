@@ -3,6 +3,7 @@ const jwt =require('jsonwebtoken')
 const authenticate = function(req, res, next) {
   //check the token in request header
   //validate this token
+  try{
   let token = req.headers["x-Auth-token"];
   if (!token) token = req.headers["x-auth-token"];
 
@@ -22,10 +23,15 @@ const authenticate = function(req, res, next) {
 
 
   next()
+  }catch(err){
+    res.send({msg : err.message})
+  }
 }
 
 
 const authorise = function(req, res, next) {
+
+  try{
   
   // comapre the logged in user's id and the id in request
 
@@ -43,12 +49,15 @@ const authorise = function(req, res, next) {
     return res.status(403).send({ status: false, msg: "token is invalid" });
 
   let userId = req.params.userId;
-  
+
   let decoded = decodedToken.userId;
   if (userId != decoded) {
     return res.status(403).send("user is not authorize to change");
   }
   next()
+}catch(err){
+  res.send({msg : err.message})
+}
 }
 
 module.exports.authenticate=authenticate

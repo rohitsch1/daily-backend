@@ -13,6 +13,7 @@ const createUser = async function (abcd, xyz) {
 };
 
 const loginUser = async function (req, res) {
+  try{
   let userName = req.body.emailId;
   let password = req.body.password;
 
@@ -40,9 +41,15 @@ const loginUser = async function (req, res) {
   res.setHeader("x-auth-token", token);
   
   res.send({ status: true, data: token });
+}
+catch(error){
+  res.send({msg : error.message})
+}
 };
 
 const getUserData = async function (req, res) {
+
+  try{
   
 
   let userId = req.params.userId;
@@ -51,10 +58,14 @@ const getUserData = async function (req, res) {
     return res.send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
+  }catch(err){
+    res.send({msg : err.message})
+  }
 };
 
 const updateUser = async function (req, res) {
 
+  try{
 
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
@@ -64,12 +75,16 @@ const updateUser = async function (req, res) {
   }
 
   let userData = req.body;
-  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, {$set:userData});
+  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, {$set:userData}, {new: true});
   res.send({ status: true, data: updatedUser });
+}catch(err){
+  res.send({msg : err.message})
+}
 };
 
 
 const postMessage = async function (req, res) {
+  try{
   let message = req.body.message
   
   let user = await userModel.findById(req.params.userId)
@@ -82,13 +97,24 @@ const postMessage = async function (req, res) {
 
   //return the updated user document
   return res.send({status: true, data: updatedUser})
+  }catch(err){
+    res.send({msg : err.message})
+  }
 }
 
 //update key isDeleted to true
 const deleteData = async function(req,res){
+  try{
   let  userId = req.params.userId
+   
+  let user = await userModel.findById(userId)
+  if(!user) return res.send({status: false, msg: 'No such user exists'})
+  
   let updateKey = await userModel.findOneAndUpdate({_id : userId}, {$set:{isDeleted:true}},{new: true})
   res.send({status : "updatedKey" , msg : updateKey})
+  }catch(err){
+    res.send({msg : err.message})
+  }
 }
 
 module.exports.createUser = createUser;
